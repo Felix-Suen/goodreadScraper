@@ -8,10 +8,14 @@ class Quote(scrapy.Spider):
     def parse(self, response):
         quotes = response.css('div.quote')
         for quote in quotes:
-            quoteSentence = quote.css('.quoteText::text').extract()
+            quote_sentence = quote.css('.quoteText::text').extract()
             source = quote.css('.authorOrTitle::text').extract()
             yield {
-                'quote': quoteSentence,
+                'quote': quote_sentence,
                 'source': source
             }
+        next_page = 'https://www.goodreads.com/quotes?page=' + str(Quote.page_number)
+        if Quote.page_number <= 10:
+            Quote.page_number += 1
+            yield response.follow(next_page, callback=self.parse)
 
