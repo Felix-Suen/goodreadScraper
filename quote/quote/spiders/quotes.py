@@ -2,10 +2,14 @@ import scrapy
 from ..items import QuoteItem
 import re
 
+# cd quote
+# scrapy crawl quotes
+# scrapy crawl -o quotes.json
+
 class Quote(scrapy.Spider):
     name = 'quotes'
     page_number = 2
-    start_urls = ['https://www.goodreads.com/quotes?page=1']
+    start_urls = ['https://www.goodreads.com/quotes/tag/motivational?page=1']
 
     def parse(self, response):
 
@@ -18,13 +22,13 @@ class Quote(scrapy.Spider):
             quote_sentence = quote_sentence.replace('\u201d', '')
             source = str(quote.css('.authorOrTitle::text').extract_first()).strip()
 
-            items['quote_sentence'] = quote_sentence
-            items['source'] = source
+            if len(re.findall(r'\w+', quote_sentence)) < 10:
+                items['quote_sentence'] = quote_sentence
+                items['source'] = source
+                yield items
 
-            yield items
-
-        next_page = 'https://www.goodreads.com/quotes?page=' + str(Quote.page_number)
-        if Quote.page_number <= 10:
+        next_page = 'https://www.goodreads.com/quotes/tag/motivational?page=' + str(Quote.page_number)
+        if Quote.page_number <= 50:
             Quote.page_number += 1
             yield response.follow(next_page, callback=self.parse)
 

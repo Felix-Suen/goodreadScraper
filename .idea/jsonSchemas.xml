@@ -8,6 +8,7 @@
             <SchemaInfo>
               <option name="name" value="2019-09" />
               <option name="relativePathToSchema" value="https://json-schema.org/draft/2019-09/schema" />
+              <option name="schemaVersion" value="JSON schema version 7" />
               <option name="applicationDefined" value="true" />
               <option name="patterns">
                 <list>
