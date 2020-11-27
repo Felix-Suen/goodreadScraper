@@ -9,7 +9,8 @@ import re
 class Quote(scrapy.Spider):
     name = 'quotes'
     page_number = 2
-    start_urls = ['https://www.goodreads.com/quotes/tag/motivational?page=1']
+    search = 'humor'
+    start_urls = ['https://www.goodreads.com/quotes/tag/' + search + '?page=1']
 
     def parse(self, response):
 
@@ -27,7 +28,7 @@ class Quote(scrapy.Spider):
                 items['source'] = source
                 yield items
 
-        next_page = 'https://www.goodreads.com/quotes/tag/motivational?page=' + str(Quote.page_number)
+        next_page = 'https://www.goodreads.com/quotes/tag/' + Quote.search + '?page=' + str(Quote.page_number)
         if Quote.page_number <= 50:
             Quote.page_number += 1
             yield response.follow(next_page, callback=self.parse)
